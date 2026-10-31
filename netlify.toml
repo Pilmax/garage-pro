@@ -1,0 +1,26 @@
+# Настройки сайта Garage Pro. Файл должен лежать в корне проекта,
+# рядом с index.html (там же, где папка netlify/functions).
+
+[build]
+  functions = "netlify/functions"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Запрещает встраивать сайт в <iframe> на чужих страницах (защита от clickjacking)
+    X-Frame-Options = "DENY"
+    # Запрещает браузеру угадывать тип файла — снижает риск некоторых XSS-атак
+    X-Content-Type-Options = "nosniff"
+    # Не передавать полный адрес страницы при переходе по внешним ссылкам
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # Отключает доступ страницы к камере/микрофону/геолокации и т.д. — сайту это не нужно
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+    # Content-Security-Policy: разрешены только свои файлы, шрифты Google Fonts
+    # и обращения к собственной функции Netlify. Инлайн-стили разрешены, так как
+    # сайт их использует; инлайн-скриптов нет — allow только 'self'.
+    Content-Security-Policy = "default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; script-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "no-store"
